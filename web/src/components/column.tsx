@@ -28,7 +28,7 @@ export default function Column({
   const [active, setActive] = useState(false);
 
   const handleDragStart = ({ event, card }: HandleDrag) => {
-    event.dataTransfer.setData("cardId", card.id);
+    event.dataTransfer.setData("cardId", card.id.toString());
   };
 
   const clearHighlights = (els?: Element[]) => {
@@ -91,8 +91,7 @@ export default function Column({
     clearHighlights();
     setActive(false);
 
-    const cardId = event.dataTransfer.getData("cardId");
-
+    const cardId = Number(event.dataTransfer.getData("cardId"));
     const indicators = getIndicators();
     const { element } = getNearestIndicator(event, indicators);
 

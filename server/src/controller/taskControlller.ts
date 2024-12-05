@@ -21,7 +21,6 @@ export const createTask = async (
 ) => {
   try {
     const { title, column } = req.body;
-    console.log(title, column);
     await connection("tasks").insert({ title, column });
 
     return res.status(201).send();
@@ -37,7 +36,6 @@ export const deleteTask = async (
 ) => {
   try {
     const { id } = req.params;
-    console.log(id);
     await connection("tasks").where("id", id).delete();
     return res.status(204).send();
   } catch (error) {
@@ -53,7 +51,6 @@ export const updateTask = async (
   try {
     const { id } = req.params;
     const { title, column } = req.body;
-    console.log(id, title, column);
     await connection("tasks").where("id", id).update({ title, column });
     return res.status(204).send();
   } catch (error) {
