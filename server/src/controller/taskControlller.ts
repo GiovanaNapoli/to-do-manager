@@ -37,7 +37,24 @@ export const deleteTask = async (
 ) => {
   try {
     const { id } = req.params;
+    console.log(id);
     await connection("tasks").where("id", id).delete();
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { title, column } = req.body;
+    console.log(id, title, column);
+    await connection("tasks").where("id", id).update({ title, column });
     return res.status(204).send();
   } catch (error) {
     next(error);

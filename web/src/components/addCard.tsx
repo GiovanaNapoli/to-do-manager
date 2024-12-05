@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import type { CardProps, ColumnTypes } from "../types";
 import { useState } from "react";
 import { PlusSignIcon } from "@houstonicons/react";
+import api from "../services/api";
 
 export default function AddCard({
   column,
@@ -13,7 +14,7 @@ export default function AddCard({
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!text.trim().length) return;
@@ -24,7 +25,10 @@ export default function AddCard({
       id: Math.random().toString(),
     };
 
-    setCards((pv) => [...pv, newCard]);
+    await api.post("tasks", newCard);
+    await api.get("/tasks").then((response) => {
+      setCards(response.data);
+    });
 
     setAdding(false);
   };

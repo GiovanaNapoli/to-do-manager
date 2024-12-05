@@ -8,6 +8,7 @@ import type {
 import Card from "./card";
 import DropIndicator from "./dropIndicator";
 import AddCard from "./addCard";
+import api from "../services/api";
 
 interface ColumnProps {
   title: string;
@@ -18,7 +19,7 @@ interface ColumnProps {
 }
 
 export default function Column({
-  cards,
+  cards = [],
   column,
   headingColor,
   setCards,
@@ -86,7 +87,7 @@ export default function Column({
     setActive(false);
   };
 
-  const handleDragDrop = (event: DefaultDragEvent) => {
+  const handleDragDrop = async (event: DefaultDragEvent) => {
     clearHighlights();
     setActive(false);
 
@@ -101,8 +102,13 @@ export default function Column({
       let copy = [...cards];
 
       let cardToTransfer = copy.find((c) => c.id === cardId);
+
       if (!cardToTransfer) return;
       cardToTransfer = { ...cardToTransfer, column };
+
+      await api.put(`/tasks/${cardId}`, {
+        ...cardToTransfer,
+      });
 
       copy = copy.filter((c) => c.id !== cardId);
 
@@ -117,7 +123,9 @@ export default function Column({
         copy.splice(insertAtIndex, 0, cardToTransfer);
       }
 
-      setCards(copy);
+      await api.get("/tasks").then((response) => {
+        return setCards(response.data);
+      });
     }
   };
 

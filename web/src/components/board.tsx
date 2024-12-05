@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CardProps, DefaultDragEvent } from "../types";
 import { FireIcon, WasteIcon } from "@houstonicons/react";
 import Column from "./column";
 
+import api from "../services/api";
+
 export default function Board() {
-  const [cards, setCards] = useState(DEFAULT_CARDS);
+  const [cards, setCards] = useState<CardProps[]>([] as CardProps[]);
+
+  const getAllTasks = async () => {
+    try {
+      const response = await api.get("/tasks");
+      setCards(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    api.get("/tasks").then((response) => {
+      setCards(response.data);
+    });
+  }, []);
+
   return (
-    <div className="flex h-full w-full gap-3 overflow-scroll px-12 hidden-scrollbar">
+    <div className="flex h-full w-full gap-3 overflow-scroll p-12 hidden-scrollbar">
       <Column
         title="Backlog"
         headingColor="text-neutral-500"
@@ -56,9 +74,20 @@ const BurnBarrel = ({
     setActive(false);
   };
 
-  const handleDragEnd = (event: DefaultDragEvent) => {
+  const handleDelete = async (cardId: string) => {
+    try {
+      await api.delete(`/tasks/${cardId}`);
+      await api.get("/tasks").then((response) => {
+        setCards(response.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDragEnd = async (event: DefaultDragEvent) => {
     const cardId = event.dataTransfer.getData("cardId");
-    setCards((cards) => cards.filter((card) => card.id !== cardId));
+    handleDelete(cardId);
     setActive(false);
   };
 
