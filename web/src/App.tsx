@@ -1,7 +1,11 @@
+import Board from "./components/board";
+import Header from "./components/header";
+
 function App() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-blue-700 font-bold">Hello word</h1>
+    <div className="h-screen w-full bg-neutral-900 text-neutral-50">
+      <Header />
+      <Board />
     </div>
   );
 }

@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-display: swap;
+}
+
+select {
+  appearance: none;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+}
