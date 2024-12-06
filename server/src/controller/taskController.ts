@@ -1,27 +1,32 @@
 import connection from "../db/connection";
 import type { Request, Response, NextFunction } from "express";
+import { generateId } from "../utils/generateId";
 
-export const getAllTasks = async (
+export const getAll = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const tasks = await connection("tasks");
+    const { project_id } = req.params;
+    const tasks = await connection("tasks")
+      .where("project_id", project_id)
+      .select("*");
     return res.status(200).json(tasks);
   } catch (error) {
     next(error);
   }
 };
 
-export const createTask = async (
+export const create = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { title, column } = req.body;
-    await connection("tasks").insert({ title, column });
+    const { title, column, project_id } = req.body;
+    const id = generateId();
+    await connection("tasks").insert({ title, column, project_id, id });
 
     return res.status(201).send();
   } catch (error) {
@@ -29,11 +34,7 @@ export const createTask = async (
   }
 };
 
-export const deleteTask = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const down = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     await connection("tasks").where("id", id).delete();
@@ -43,7 +44,7 @@ export const deleteTask = async (
   }
 };
 
-export const updateTask = async (
+export const update = async (
   req: Request,
   res: Response,
   next: NextFunction

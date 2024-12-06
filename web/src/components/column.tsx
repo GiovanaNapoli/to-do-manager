@@ -16,6 +16,7 @@ interface ColumnProps {
   column: ColumnTypes;
   cards: CardProps[];
   setCards: React.Dispatch<React.SetStateAction<CardProps[]>>;
+  project_id: string;
 }
 
 export default function Column({
@@ -24,6 +25,7 @@ export default function Column({
   headingColor,
   setCards,
   title,
+  project_id,
 }: ColumnProps) {
   const [active, setActive] = useState(false);
 
@@ -91,7 +93,7 @@ export default function Column({
     clearHighlights();
     setActive(false);
 
-    const cardId = Number(event.dataTransfer.getData("cardId"));
+    const cardId = event.dataTransfer.getData("cardId");
     const indicators = getIndicators();
     const { element } = getNearestIndicator(event, indicators);
 
@@ -122,7 +124,7 @@ export default function Column({
         copy.splice(insertAtIndex, 0, cardToTransfer);
       }
 
-      await api.get("/tasks").then((response) => {
+      await api.get(`/tasks/${project_id}`).then((response) => {
         return setCards(response.data);
       });
     }
@@ -150,7 +152,7 @@ export default function Column({
           <Card key={card.id} {...card} handleDragStart={handleDragStart} />
         ))}
         <DropIndicator beforeId="-1" column={column} />
-        <AddCard column={column} setCards={setCards} />
+        <AddCard column={column} setCards={setCards} project_id={project_id} />
       </div>
     </div>
   );

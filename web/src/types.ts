@@ -6,7 +6,12 @@ export type HandleDrag = {
 };
 
 export interface CardProps {
-  title: string; // The title of the card, describing the task or item
-  id: number; // A unique identifier for the card
-  column: ColumnTypes; // The column the card belongs to, with specific allowed values
+  title: string;
+  id: string;
+  column: ColumnTypes;
+}
+
+export interface ProjectProps {
+  id: string;
+  name: string;
 }

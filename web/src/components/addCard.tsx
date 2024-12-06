@@ -7,9 +7,11 @@ import api from "../services/api";
 export default function AddCard({
   column,
   setCards,
+  project_id,
 }: {
   setCards: React.Dispatch<React.SetStateAction<CardProps[]>>;
   column: ColumnTypes;
+  project_id: string;
 }) {
   const [text, setText] = useState("");
   const [adding, setAdding] = useState(false);
@@ -22,11 +24,11 @@ export default function AddCard({
     const newCard = {
       column,
       title: text.trim(),
-      id: Math.random().toString(),
+      project_id,
     };
 
-    await api.post("tasks", newCard);
-    await api.get("/tasks").then((response) => {
+    await api.post("/tasks", newCard);
+    await api.get(`/tasks/${project_id}`).then((response) => {
       setCards(response.data);
     });
 

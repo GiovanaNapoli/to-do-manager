@@ -2,7 +2,9 @@ import type { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable("tasks", (table) => {
-    table.increments();
+    table.string("id").primary();
+    table.string("project_id").notNullable();
+    table.foreign("project_id").references("id").inTable("projects");
     table.string("title").notNullable();
     table.string("column").notNullable();
   });

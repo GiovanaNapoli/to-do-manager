@@ -5,14 +5,18 @@ import Column from "./column";
 
 import api from "../services/api";
 
-export default function Board() {
+export default function Board({
+  selectedProject: project_id,
+}: {
+  selectedProject: string;
+}) {
   const [cards, setCards] = useState<CardProps[]>([] as CardProps[]);
 
   useEffect(() => {
-    api.get("/tasks").then((response) => {
+    api.get(`/tasks/${project_id}`).then((response) => {
       setCards(response.data);
     });
-  }, []);
+  }, [project_id]);
 
   return (
     <div className="flex h-full w-full gap-3 overflow-scroll p-12 hidden-scrollbar">
@@ -22,37 +26,43 @@ export default function Board() {
         column="backlog"
         cards={cards}
         setCards={setCards}
+        project_id={project_id}
       />
       <Column
         title="Aberto"
-        headingColor="text-yellow-200"
+        headingColor="text-amber-500"
         column="todo"
         cards={cards}
+        project_id={project_id}
         setCards={setCards}
       />
       <Column
         title="Em progresso"
-        headingColor="text-blue-200"
+        headingColor="text-violet-500"
         column="doing"
         cards={cards}
+        project_id={project_id}
         setCards={setCards}
       />
       <Column
         title="Completo"
-        headingColor="text-emerald-200"
+        headingColor="text-green-500"
         column="done"
         cards={cards}
+        project_id={project_id}
         setCards={setCards}
       />
-      <BurnBarrel setCards={setCards} />
+      <BurnBarrel setCards={setCards} project_id={project_id} />
     </div>
   );
 }
 
 const BurnBarrel = ({
   setCards,
+  project_id,
 }: {
   setCards: React.Dispatch<React.SetStateAction<CardProps[]>>;
+  project_id: string;
 }) => {
   const [active, setActive] = useState(false);
 
@@ -68,11 +78,11 @@ const BurnBarrel = ({
   const handleDelete = async (cardId: string) => {
     try {
       await api.delete(`/tasks/${cardId}`);
-      await api.get("/tasks").then((response) => {
+      await api.get(`/tasks/${project_id}`).then((response) => {
         setCards(response.data);
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
